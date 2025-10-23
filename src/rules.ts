@@ -9,12 +9,15 @@ export const tsRules: Partial<RulesConfig> = {
   '@typescript-eslint/no-empty-object-type': 'warn',
   '@typescript-eslint/no-explicit-any': 'warn',
   '@typescript-eslint/no-unused-vars': [
-    'error',
+    'warn',
     {
       vars: 'all',
       args: 'all',
+      caughtErrors: 'all',
       varsIgnorePattern: '^_',
-      argsIgnorePattern: '^_'
+      argsIgnorePattern: '^_',
+      caughtErrorsIgnorePattern: '^_',
+      ignoreRestSiblings: true
     }
   ]
 };
@@ -33,5 +36,11 @@ export const jsRules: Partial<RulesConfig> = {
 
 
 export const svelteRules: Partial<RulesConfig> = {
-  // Add Svelte rules here
+  'svelte/no-at-html-tags': 'off',
+  'svelte/no-navigation-without-resolve': 'off',
+  'svelte/no-unused-props': [
+    'warn', {
+      ignorePropertyPatterns: ['/^_/']
+    }
+  ]
 };
