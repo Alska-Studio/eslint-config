@@ -12,8 +12,6 @@ export default (params) => {
     return defineConfig([
         fs.existsSync(gitignorePath) ? includeIgnoreFile(gitignorePath) : [],
         js.configs.recommended,
-        ts.configs.recommended,
-        svelte.configs.recommended,
         {
             languageOptions: {
                 globals: { ...globals.browser, ...globals.node }
@@ -31,6 +29,7 @@ export default (params) => {
                 '**/*.svelte.js'
             ],
             ignores: ['**/*.js'],
+            extends: [ts.configs.recommended, svelte.configs.recommended],
             languageOptions: {
                 parserOptions: {
                     tsconfigRootDir,
@@ -50,6 +49,7 @@ export default (params) => {
                 '**/*.cts',
                 '**/*.mts'
             ],
+            extends: [ts.configs.recommended],
             ignores: ['**/*.js'],
             languageOptions: {
                 parser: ts.parser,

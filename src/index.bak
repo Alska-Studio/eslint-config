@@ -1,0 +1,101 @@
+import { resolve } from 'node:path';
+import fs from 'node:fs';
+
+import { defineConfig } from 'eslint/config';
+import js from '@eslint/js';
+import ts from 'typescript-eslint';
+import svelte from 'eslint-plugin-svelte';
+import globals from 'globals';
+import { includeIgnoreFile } from '@eslint/compat';
+
+import { tsRules, jsRules, svelteRules } from './rules';
+import { RuleConfig, RulesConfig } from '@eslint/core';
+
+export interface Params {
+  tsconfigRootDir: string;
+  gitignorePath: string;
+  projects?: string[];
+}
+
+export default (params: Params) => {
+  const {
+    tsconfigRootDir = process.cwd() ?? resolve('.'),
+    gitignorePath = resolve(tsconfigRootDir, '.gitignore'),
+    projects
+  } = params;
+
+  const tsBaseRules = ts.configs.recommended.filter((c) => c.name === 'typescript-eslint/base')[0];
+  /*
+  console.log(JSON.stringify(tsBaseRules, null, 2));
+
+  const tsRecommendedRules = ts.configs.recommended
+    .filter((c) => c.rules)
+    .reduce<Partial<RulesConfig>>((acc, c) => {
+      return Object.assign(acc, c.rules);
+    }, {} as Partial<RulesConfig>);
+
+  const svelteRecommendedRules = svelte.configs.recommended
+    .filter((c) => c.rules)
+    .reduce<Partial<RulesConfig>>((acc, c) => {
+      return Object.assign(acc, c.rules);
+    }, {} as Partial<RulesConfig>);
+  */
+
+  return defineConfig([
+    fs.existsSync(gitignorePath) ? includeIgnoreFile(gitignorePath) : [],
+    js.configs.recommended,
+    ts.configs.recommended.filter((c) => c.name === 'typescript-eslint/base'),
+    // --- TypeScript files ---
+    {
+      files: [
+        '**/*.{ts,tsx,cts,mts}',
+      ],
+      languageOptions: {
+        parserOptions: {
+          tsconfigRootDir,
+          project: projects,
+          parser: ts.parser,
+        },
+      },
+      plugins: {
+        '@typescript-eslint': ts.plugin
+      },
+      rules: {
+        ...jsRules,
+        ...tsRules
+      }
+    },
+    // --- Svelte files ---
+    {
+      files: [
+        '**/*.svelte',
+        '**/*.svelte.{ts,js}'
+      ],
+      languageOptions: {
+        parserOptions: {
+          tsconfigRootDir,
+          project: projects,
+          extraFileExtensions: ['.svelte'],
+          projectService: true,
+          parser: ts.parser
+        },
+      },
+      plugins: {
+        '@typescript-eslint': ts.plugin
+      },
+      rules: {
+        ...jsRules,
+        ...tsRules,
+        ...svelteRules
+      }
+    },
+    // --- JavaScript files ---
+    {
+      files: [
+        '**/*.{js,mjs,cjs}'
+      ],
+      ignores: ['**/*.svelte.*'],
+      rules: jsRules
+    }
+  ]);
+};

@@ -6,6 +6,7 @@ export const tsRules = {
     '@typescript-eslint/no-empty-interface': 'warn',
     '@typescript-eslint/no-empty-object-type': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -27,7 +28,20 @@ export const jsRules = {
     quotes: ['error', 'single'],
     'object-curly-spacing': [1, 'always'],
     'comma-dangle': ['error', 'never'],
-    'quote-props': ['error', 'as-needed']
+    'quote-props': ['error', 'as-needed'],
+    'import/no-anonymous-default-export': 'off',
+    'no-unused-vars': [
+        'warn',
+        {
+            vars: 'all',
+            args: 'all',
+            caughtErrors: 'all',
+            varsIgnorePattern: '^_',
+            argsIgnorePattern: '^_',
+            caughtErrorsIgnorePattern: '^_',
+            ignoreRestSiblings: true
+        }
+    ]
 };
 export const svelteRules = {
     'svelte/no-at-html-tags': 'off',
@@ -38,3 +52,4 @@ export const svelteRules = {
         }
     ]
 };
+// export const nextjsRules: Partial<RulesConfig> = {};
