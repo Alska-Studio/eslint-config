@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run build --loglevel=error --no-update-notifier",
     "check": "sh -c 'eslint --print-config eslint.config.ts | grep \"$1\" -A 5' sh",
     "check:all": "eslint --print-config eslint.config.ts"
   },
