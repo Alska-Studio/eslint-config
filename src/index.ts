@@ -1,3 +1,5 @@
+import type { Linter } from 'eslint';
+
 import { resolve } from 'node:path';
 import fs from 'node:fs';
 
@@ -22,8 +24,8 @@ export default (params: {
   } = params;
 
   return defineConfig([
-    fs.existsSync(gitignorePath) ? includeIgnoreFile(gitignorePath) : [],
-    js.configs.recommended,
+    (fs.existsSync(gitignorePath) ? includeIgnoreFile(gitignorePath) : {}) as Linter.Config,
+    js.configs.recommended as Linter.Config,
     {
       languageOptions: {
         globals: { ...globals.browser, ...globals.node }
